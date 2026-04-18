@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Add Aircraft</title>
+</head>
+<body>
+    <h1>US Military Aircraft Database</h1>
+
+    <h2>Upload New Aircraft</h2>
+    <form action="/add" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div>
+            <label>Aircraft Model:</label>
+            <input type="text" id="model" name="model" value="{{ form_data.get('model', '') }}">
+            {% if errors.model %}<span class="error">{{ errors.model }}</span>{% endif %}
+        </div>
+        <br>
+        <div>
+            <label>Technical Specs (one per line):</label>
+            <textarea id="specs" name="specs" rows="4">{{ form_data.get('specs', '') }}</textarea>
+            {% if errors.specs %}<span class="error">{{ errors.specs }}</span>{% endif %}
+        </div>
+        <br>
+        <div>
+            <label>Service Branch:</label>
+            <input type="text" id="branch" name="branch" value="{{ form_data.get('branch', '') }}">
+        </div>
+        <br>
+        <div>
+            <label>Aircraft Image:</label>
+            <input type="file" id="image" name="image" accept="image/*">
+            {% if errors.image %}<span class="error">{{ errors.image }}</span>{% endif %}
+        </div>
+        <br>
+        <button type="submit">Add to Database</button>
+    </form>
+
+    <hr>
+
+    <h2>Current Aircraft Fleet</h2>
+    {% if aircrafts %}
+        {% for plane in aircrafts %}
+        <div class="aircraft-card">
+            <h3>{{ plane.model }}</h3>
+            <img src="{{ url_for('static', filename=plane.image) }}" alt="{{ plane.model }}">
+            <p><strong>Specifications:</strong></p>
+            <ul>
+                {% for s in plane.specs %}
+                <li>{{ s }}</li>
+                {% endfor %}
+            </ul>
+            <p><strong>Branch:</strong> {{ plane.branch }}</p>
+        </div>
+        <hr>
+        {% endfor %}
+    {% else %}
+        <p>No aircraft records found.</p>
+    {% endif %}
+
+    <p><a href="{{ url_for('home') }}">Home</a> | <a href="{{ url_for('delete_plane_page') }}">Delete Page</a></p>
+
+    <script>
+    function validateForm() {
+        var model = document.getElementById('model').value;
+        var specs = document.getElementById('specs').value;
+        var image = document.getElementById('image').value;
+
+        if (model.trim() === "" || specs.trim() === "" || image === "") {
+            alert("Model, Specs, and Image are required!");
+            return false;
+        }
+        return true;
+    }
+    </script>
+</body>
+</html>

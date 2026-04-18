@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Delete Aircraft</title>
+</head>
+<body>
+    <h1>Manage Fleet Records</h1>
+
+    <form method="POST">
+        <ul>
+            {% if aircrafts %}
+                {% for plane in aircrafts %}
+                    <li>
+                        <input type="checkbox" name="aircraft_to_delete" value="{{ loop.index0 }}">
+                        {{ plane.model }}
+                    </li>
+                {% endfor %}
+            {% else %}
+                <li>No records found.</li>
+            {% endif %}
+        </ul>
+
+        {% if aircrafts %}
+            <button type="submit">Delete Selected Records</button>
+        {% endif %}
+    </form>
+
+    <p><a href="{{ url_for('add_plane_page') }}">Back to Database</a></p>
+    <p><a href="{{ url_for('home') }}">Home</a></p>
+</body>
+</html>
